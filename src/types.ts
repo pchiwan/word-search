@@ -12,3 +12,8 @@ export type InputType = {
   word_locations: Dictionary;
   target_language: string;
 };
+
+export type Coordinate = {
+  x: number;
+  y: number;
+};

@@ -1,37 +1,87 @@
-import { Dictionary } from "./types";
+import { Coordinate } from "./types";
 
-type Coordinate = {
-  x: number;
-  y: number;
+const parseCoord = (coord: string): Coordinate => {
+  const coordArray = coord.split(",");
+  return {
+    x: parseInt(coordArray[0], 10),
+    y: parseInt(coordArray[1], 10),
+  };
 };
 
-type WordCoordinates = {
-  word: string;
-  coords: Coordinate[];
+const isValidHorizontalLine = (xDiff: number, yDiff: number) => !yDiff && xDiff;
+const isValidVerticalLine = (xDiff: number, yDiff: number) => !xDiff && yDiff;
+const isValidDiagonalLine = (xDiff: number, yDiff: number) =>
+  Math.abs(yDiff) === Math.abs(xDiff);
+
+const getStartEnd = (numA: number, numB: number) => {
+  return [Math.min(numA, numB), Math.max(numA, numB)];
 };
 
-export const parseWordLocations = (
-  wordLocations: Dictionary
-): WordCoordinates[] => {
-  const output: WordCoordinates[] = [];
+const calculateHorizontalLine = (
+  startCoord: Coordinate,
+  endCoord: Coordinate
+): string[] => {
+  const coords = [];
+  const [startX, endX] = getStartEnd(startCoord.x, endCoord.x);
+  for (let x = startX; x <= endX; x++) {
+    coords.push(`${x},${startCoord.y}`);
+  }
+  return coords;
+};
 
-  Object.keys(wordLocations).forEach((key) => {
-    const wordCoords: WordCoordinates = {
-      word: wordLocations[key],
-      coords: [],
-    };
+const calculateVerticalLine = (
+  startCoord: Coordinate,
+  endCoord: Coordinate
+): string[] => {
+  const coords = [];
+  const [startY, endY] = getStartEnd(startCoord.y, endCoord.y);
+  for (let y = startY; y <= endY; y++) {
+    coords.push(`${startCoord.x},${y}`);
+  }
+  return coords;
+};
 
-    const coords = key.split(",");
+const calculateDiagonalLine = (
+  startCoord: Coordinate,
+  endCoord: Coordinate
+): string[] => {
+  const coords = [];
+  const len = Math.abs(startCoord.x - endCoord.x);
+  const xGrows = startCoord.x < endCoord.x;
+  const yGrows = startCoord.y < endCoord.y;
 
-    for (let i = 0; i < coords.length; i += 2) {
-      wordCoords.coords.push({
-        x: parseInt(coords[i], 10),
-        y: parseInt(coords[i + 1], 10),
-      });
-    }
+  for (let i = 0; i <= len; i++) {
+    const x = xGrows ? startCoord.x + i : startCoord.x - i;
+    const y = yGrows ? startCoord.y + i : startCoord.y - i;
+    coords.push(`${x},${y}`);
+  }
+  return coords;
+};
 
-    output.push(wordCoords);
-  });
+export const calculateValidLine = (start: string, end: string): string[] => {
+  const startCoord = parseCoord(start);
+  const endCoord = parseCoord(end);
 
-  return output;
+  const yDiff = startCoord.y - endCoord.y;
+  const xDiff = startCoord.x - endCoord.x;
+
+  let line: string[] = [];
+
+  if (isValidHorizontalLine(xDiff, yDiff)) {
+    line = calculateHorizontalLine(startCoord, endCoord);
+  }
+
+  if (isValidVerticalLine(xDiff, yDiff)) {
+    line = calculateVerticalLine(startCoord, endCoord);
+  }
+
+  if (isValidDiagonalLine(xDiff, yDiff)) {
+    line = calculateDiagonalLine(startCoord, endCoord);
+  }
+
+  if (!line.length) {
+    return line;
+  }
+
+  return start !== line[0] ? line.reverse() : line;
 };
