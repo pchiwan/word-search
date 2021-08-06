@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Grid from "./components/Grid";
 import { InputType } from "./types";
-import { parseWordLocations } from "./utils";
-
-const inputs: InputType[] = require("./inputs.json");
+import Game from "./Game";
 
 const Root = styled.div`
   display: flex;
@@ -16,25 +13,18 @@ const Root = styled.div`
   margin: 20px auto 0 auto;
 `;
 
-const Paragraph = styled.p`
-  margin: 5px 0;
-  font-size: 20px;
-`;
+interface AppProps {
+  games: InputType[];
+}
 
-const Spacer = styled.div`
-  margin-bottom: 20px;
-`;
+function App({ games }: AppProps) {
+  const [gameIndex, setGameIndex] = useState(0);
 
-function App() {
-  const [inputIndex, setInputIndex] = useState(0);
+  const handleGameFinished = () => {
+    setGameIndex(gameIndex + 1);
+  };
 
-  const {
-    character_grid,
-    source_language,
-    target_language,
-    word,
-    word_locations,
-  } = inputs[inputIndex] as InputType;
+  const currentGame = games[gameIndex];
 
   return (
     <Root>
@@ -44,18 +34,11 @@ function App() {
           🔍
         </span>
       </h1>
-      <Spacer>
-        <Paragraph>
-          Search word: <strong>{word}</strong>
-        </Paragraph>
-        <Paragraph>
-          Source language: <strong>{source_language}</strong>
-        </Paragraph>
-        <Paragraph>
-          Target language: <strong>{target_language}</strong>
-        </Paragraph>
-      </Spacer>
-      <Grid grid={character_grid} />
+      {currentGame ? (
+        <Game game={currentGame} onGameFinished={handleGameFinished} />
+      ) : (
+        <h2>There are no more games!</h2>
+      )}
     </Root>
   );
 }

@@ -1,10 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+
+import { InputType } from "./types";
+import App from "./App";
+
+const inputs: InputType[] = require("./inputs.json");
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App games={inputs} />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
