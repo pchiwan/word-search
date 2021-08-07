@@ -13,12 +13,12 @@ const Spacer = styled.div`
   margin-bottom: 20px;
 `;
 
-interface GameProps {
+export interface GameProps {
   game: InputType;
-  onGameFinished: () => void;
+  onGameFinished?: () => void;
 }
 
-const Game = ({ game, onGameFinished }: GameProps) => {
+const Game = ({ game, onGameFinished = () => {} }: GameProps) => {
   const [foundCoords, setFoundCoords] = useState(new Set<string>());
   const foundWordsCount = useRef(0);
   const wordLocations = useRef([] as string[]);

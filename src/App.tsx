@@ -13,11 +13,11 @@ const Root = styled.div`
   margin: 20px auto 0 auto;
 `;
 
-interface AppProps {
-  games: InputType[];
+export interface AppProps {
+  games?: InputType[];
 }
 
-function App({ games }: AppProps) {
+function App({ games = [] }: AppProps) {
   const [gameIndex, setGameIndex] = useState(0);
 
   const handleGameFinished = () => {
