@@ -10,7 +10,16 @@ const Root = styled.div`
   justify-content: center;
   align-items: center;
   width: 800px;
-  margin: 20px auto 0 auto;
+  margin: 0 auto;
+`;
+
+const Title = styled.h1`
+  font-family: "Unica One", cursive;
+  font-size: 40px;
+
+  span {
+    font-size: 34px;
+  }
 `;
 
 export interface AppProps {
@@ -28,12 +37,12 @@ function App({ games = [] }: AppProps) {
 
   return (
     <Root>
-      <h1>
+      <Title>
         Word Search{" "}
         <span aria-label="Magnifying glass" role="img">
           🔍
         </span>
-      </h1>
+      </Title>
       {currentGame ? (
         <Game game={currentGame} onGameFinished={handleGameFinished} />
       ) : (

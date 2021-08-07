@@ -41,6 +41,16 @@ const Grid = ({
   const prevCoord = useRef("");
 
   useEffect(() => {
+    const handleMouseUp = () => {
+      setIsMouseDown(false);
+    };
+
+    // quit "selection mode" when mouse up happens outside of the grid
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => document.removeEventListener("mouseup", handleMouseUp);
+  }, []);
+
+  useEffect(() => {
     setSelectedCells(new Set<string>());
   }, [grid]);
 
@@ -56,6 +66,9 @@ const Grid = ({
     if (isMouseDown) {
       const coord = getCoordFromDataset(event);
 
+      // since mouse move happens many times for the same cell, instead of
+      // throttling the event handler we use a ref for the previous coord to
+      // prevent calculating the same line multiple times
       if (startCoord !== coord && coord !== prevCoord.current) {
         const line = calculateValidLine(startCoord, coord);
         setSelectedCells(new Set(line));
@@ -66,6 +79,8 @@ const Grid = ({
 
   const handleMouseUp = (event: React.MouseEvent<HTMLElement>) => {
     setIsMouseDown(false);
+
+    // onWordSelected callback will return true if the selected line is a valid word
     if (!onWordSelected(Array.from(selectedCells))) {
       setSelectedCells(new Set<string>());
     }

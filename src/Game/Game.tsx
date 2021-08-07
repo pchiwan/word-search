@@ -5,8 +5,9 @@ import { InputType } from "../types";
 import Grid from "./Grid";
 
 const Paragraph = styled.p`
-  margin: 5px 0;
   font-size: 20px;
+  margin: 5px 0;
+  text-align: center;
 `;
 
 const Spacer = styled.div`
@@ -20,8 +21,8 @@ export interface GameProps {
 
 const Game = ({ game, onGameFinished = () => {} }: GameProps) => {
   const [foundCoords, setFoundCoords] = useState(new Set<string>());
-  const foundWordsCount = useRef(0);
   const wordLocations = useRef([] as string[]);
+  const foundWordsCount = useRef(0);
 
   const reset = useCallback(() => {
     setFoundCoords(new Set<string>());
@@ -62,6 +63,12 @@ const Game = ({ game, onGameFinished = () => {} }: GameProps) => {
         </Paragraph>
         <Paragraph>
           Target language: <strong>{game.target_language}</strong>
+        </Paragraph>
+        <Paragraph>
+          Words to find:{" "}
+          <strong>
+            {foundWordsCount.current}/{wordLocations.current.length}
+          </strong>
         </Paragraph>
       </Spacer>
       <Grid

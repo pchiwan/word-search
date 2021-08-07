@@ -29,6 +29,7 @@ describe("Game component", () => {
     expect(getByText(DEFAULT_GAME.word)).toBeInTheDocument();
     expect(getByText(DEFAULT_GAME.source_language)).toBeInTheDocument();
     expect(getByText(DEFAULT_GAME.target_language)).toBeInTheDocument();
+    expect(getByText("0/1")).toBeInTheDocument();
   });
 
   it("should render the game grid", () => {
