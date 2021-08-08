@@ -9,7 +9,6 @@ const Root = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 800px;
   margin: 0 auto;
 `;
 
@@ -19,6 +18,20 @@ const Title = styled.h1`
 
   span {
     font-size: 34px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 30px;
+
+    span {
+      font-size: 24px;
+    }
+  }
+`;
+
+const Message = styled.h2`
+  @media (max-width: 480px) {
+    font-size: 20px;
   }
 `;
 
@@ -46,7 +59,7 @@ function App({ games = [] }: AppProps) {
       {currentGame ? (
         <Game game={currentGame} onGameFinished={handleGameFinished} />
       ) : (
-        <h2>There are no more games!</h2>
+        <Message>There are no more games!</Message>
       )}
     </Root>
   );

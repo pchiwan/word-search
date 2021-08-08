@@ -21,9 +21,16 @@ const Root = styled.div<StyledCellProps>`
   background-color: ${(props) =>
     props.highlighted || props.selected ? HIGHLIGHTED_COLOR : "white"};
 
-  &:hover {
-    background-color: ${(props) =>
-      props.selected ? HIGHLIGHTED_COLOR : HOVER_COLOR};
+  @media (min-width: 768px) {
+    &:hover {
+      background-color: ${(props) =>
+        props.selected ? HIGHLIGHTED_COLOR : HOVER_COLOR};
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+    font-size: 18px;
   }
 `;
 
@@ -32,10 +39,14 @@ export interface CellProps {
   coord: string;
   highlighted?: boolean;
   selected?: boolean;
-  onMouseDown?: (event: React.MouseEvent<HTMLElement>) => void;
-  onMouseMove?: (event: React.MouseEvent<HTMLElement>) => void;
-  onMouseUp?: (event: React.MouseEvent<HTMLElement>) => void;
+  onMouseDown?: (coord: string) => void;
+  onMouseMove?: (coord: string) => void;
+  onMouseUp?: () => void;
 }
+
+const getCoordFromDataset = (element: HTMLElement): string => {
+  return element.dataset["coord"] || "";
+};
 
 const Cell = ({
   children,
@@ -46,14 +57,40 @@ const Cell = ({
   onMouseMove = () => {},
   onMouseUp = () => {},
 }: CellProps) => {
+  const handleMouseDownOrTouchStart = (
+    event: React.MouseEvent | React.TouchEvent
+  ) => {
+    onMouseDown(getCoordFromDataset(event.target as HTMLElement));
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    onMouseMove(getCoordFromDataset(event.target as HTMLElement));
+  };
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    const changedTouch = event.changedTouches[0];
+    const element = document.elementFromPoint(
+      changedTouch.clientX,
+      changedTouch.clientY
+    );
+    onMouseMove(getCoordFromDataset(element as HTMLElement));
+  };
+
+  const handleMouseUpOrTouchEnd = () => {
+    onMouseUp();
+  };
+
   return (
     <Root
       data-coord={coord}
       highlighted={highlighted}
       selected={selected}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
+      onMouseDown={handleMouseDownOrTouchStart}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUpOrTouchEnd}
+      onTouchStart={handleMouseDownOrTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseUpOrTouchEnd}
     >
       {children}
     </Root>

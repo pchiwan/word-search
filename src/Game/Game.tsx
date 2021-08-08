@@ -8,6 +8,10 @@ const Paragraph = styled.p`
   font-size: 20px;
   margin: 5px 0;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
 `;
 
 const Spacer = styled.div`
