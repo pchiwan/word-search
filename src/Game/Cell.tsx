@@ -22,10 +22,14 @@ const Root = styled.div<StyledCellProps>`
     props.highlighted || props.selected ? HIGHLIGHTED_COLOR : "white"};
 
   @media (min-width: 768px) {
-    &:hover {
-      background-color: ${(props) =>
-        props.selected ? HIGHLIGHTED_COLOR : HOVER_COLOR};
-    }
+    ${(props) =>
+      !props.selected &&
+      !props.highlighted &&
+      `
+      &:hover {
+        background-color: ${HOVER_COLOR};
+      }
+    `}
   }
 
   @media (max-width: 480px) {
