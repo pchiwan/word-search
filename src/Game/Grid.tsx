@@ -24,13 +24,13 @@ const Root = styled.div<StyledGridProps>`
 export interface GridProps {
   grid: CharacterGrid;
   highlightedCells: Set<string>;
-  onWordSelected?: (coords: string[]) => boolean;
+  onWordSelected?: (coords: string[]) => void;
 }
 
 const Grid = ({
   grid,
   highlightedCells,
-  onWordSelected = () => false,
+  onWordSelected = () => {},
 }: GridProps) => {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startCoord, setStartCoord] = useState("");
@@ -84,10 +84,9 @@ const Grid = ({
   const handleMouseUp = () => {
     setIsMouseDown(false);
 
-    // onWordSelected callback will return true if the selected line is a valid word
-    if (!onWordSelected(Array.from(selectedCells))) {
-      setSelectedCells(new Set<string>());
-    }
+    // onWordSelected callback checks if the selected line is a valid word
+    onWordSelected(Array.from(selectedCells));
+    setSelectedCells(new Set<string>());
   };
 
   return (

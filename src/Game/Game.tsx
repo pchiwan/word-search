@@ -40,7 +40,7 @@ const Game = ({ game, onGameFinished = () => {} }: GameProps) => {
     }
   }, [game, reset]);
 
-  const handleWordSelected = (coords: string[]): boolean => {
+  const handleWordSelected = (coords: string[]): void => {
     if (wordLocations.current.includes(coords.join(","))) {
       foundWordsCount.current += 1;
 
@@ -49,11 +49,7 @@ const Game = ({ game, onGameFinished = () => {} }: GameProps) => {
       } else {
         setFoundCoords(new Set([...Array.from(foundCoords), ...coords]));
       }
-
-      return true;
     }
-
-    return false;
   };
 
   return (
