@@ -15,6 +15,10 @@ const Root = styled.div<StyledGridProps>`
   grid-template-columns: repeat(${(props) => props.columns || 1}, 50px);
   border-top: 1px solid black;
   border-left: 1px solid black;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(${(props) => props.columns || 1}, 32px);
+  }
 `;
 
 export interface GridProps {
@@ -22,13 +26,6 @@ export interface GridProps {
   highlightedCells: Set<string>;
   onWordSelected?: (coords: string[]) => boolean;
 }
-
-const getCoordFromDataset = (event: React.MouseEvent<HTMLElement>): string => {
-  if (event.target instanceof HTMLElement) {
-    return event.target.dataset["coord"] || "";
-  }
-  return "";
-};
 
 const Grid = ({
   grid,
@@ -41,31 +38,38 @@ const Grid = ({
   const prevCoord = useRef("");
 
   useEffect(() => {
-    const handleMouseUp = () => {
+    const handleMouseUpOrTouchEnd = () => {
       setIsMouseDown(false);
     };
+    // quit "selection mode" when mouse up/touch end happens outside of the grid
+    document.addEventListener("mouseup", handleMouseUpOrTouchEnd);
+    document.addEventListener("touchend", handleMouseUpOrTouchEnd);
 
-    // quit "selection mode" when mouse up happens outside of the grid
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => document.removeEventListener("mouseup", handleMouseUp);
+    const preventScreenScroll = (event: TouchEvent) => {
+      event.preventDefault();
+    };
+    // prevent screen from scrolling when touch-dragging over it
+    document.addEventListener("touchmove", preventScreenScroll, {
+      passive: false,
+    });
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUpOrTouchEnd);
+      document.removeEventListener("touchend", handleMouseUpOrTouchEnd);
+      document.removeEventListener("touchmove", preventScreenScroll);
+    };
   }, []);
 
   useEffect(() => {
     setSelectedCells(new Set<string>());
   }, [grid]);
 
-  const handleMouseDown = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      setIsMouseDown(true);
-      setStartCoord(getCoordFromDataset(event));
-    },
-    []
-  );
+  const handleMouseDown = useCallback((coord: string) => {
+    setIsMouseDown(true);
+    setStartCoord(coord);
+  }, []);
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMouseMove = (coord: string) => {
     if (isMouseDown) {
-      const coord = getCoordFromDataset(event);
-
       // since mouse move happens many times for the same cell, instead of
       // throttling the event handler we use a ref for the previous coord to
       // prevent calculating the same line multiple times
@@ -77,7 +81,7 @@ const Grid = ({
     }
   };
 
-  const handleMouseUp = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMouseUp = () => {
     setIsMouseDown(false);
 
     // onWordSelected callback will return true if the selected line is a valid word

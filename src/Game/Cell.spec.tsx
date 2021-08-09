@@ -60,7 +60,7 @@ describe("Cell component", () => {
     });
 
     fireEvent.mouseDown(getByText(DEFAULT_TEXT));
-    expect(onMouseDownSpy).toHaveBeenCalled();
+    expect(onMouseDownSpy).toHaveBeenCalledWith(DEFAULT_COORD);
   });
 
   it("should execute onMouseMove callback", () => {
@@ -72,7 +72,7 @@ describe("Cell component", () => {
     });
 
     fireEvent.mouseMove(getByText(DEFAULT_TEXT));
-    expect(onMouseMoveSpy).toHaveBeenCalled();
+    expect(onMouseMoveSpy).toHaveBeenCalledWith(DEFAULT_COORD);
   });
 
   it("should execute onMouseUp callback", () => {
