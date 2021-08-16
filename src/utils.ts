@@ -17,7 +17,7 @@ const getStartEnd = (numA: number, numB: number) => {
   return [Math.min(numA, numB), Math.max(numA, numB)];
 };
 
-const calculateHorizontalLine = (
+export const calculateHorizontalLine = (
   startCoord: Coordinate,
   endCoord: Coordinate
 ): string[] => {
@@ -29,7 +29,7 @@ const calculateHorizontalLine = (
   return coords;
 };
 
-const calculateVerticalLine = (
+export const calculateVerticalLine = (
   startCoord: Coordinate,
   endCoord: Coordinate
 ): string[] => {
@@ -41,7 +41,7 @@ const calculateVerticalLine = (
   return coords;
 };
 
-const calculateDiagonalLine = (
+export const calculateDiagonalLine = (
   startCoord: Coordinate,
   endCoord: Coordinate
 ): string[] => {
@@ -83,5 +83,8 @@ export const calculateValidLine = (start: string, end: string): string[] => {
     return line;
   }
 
+  // horizontal lines are always calculated from left to right, and
+  // vertical lines are always calculated top to bottom, so we need to reverse
+  // the line if the first start coordinate doesn't match with the line's 1st coordinate
   return start !== line[0] ? line.reverse() : line;
 };
